@@ -1,6 +1,4 @@
 streamlit
 Pillow
 numpy
-opencv-python-headless==4.7.0.68
-pytesseract
-tesseract-ocr
+easyocr
