@@ -1,6 +1,4 @@
 streamlit
 Pillow
 numpy
-tesseract
-pytesseract
-tesseract-ocr
+easyocr

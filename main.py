@@ -1,43 +1,40 @@
-import pytesseract as pt
+import easyocr as ocr
 import streamlit as st
 from PIL import Image
 import numpy as np
-import cv2
 
+# Установка ширины страницы Streamlit
+st.set_page_config(layout="wide")
 
-def load_image(image):
-    img = Image.open(image)
-    return img
+# Заголовок приложения
+st.title("Read Text from Photo")
 
+# Загрузка модели OCR
+@st.cache_data
+def load_model():
+    reader = ocr.Reader(['ru', 'en'], model_storage_directory='.')
+    return reader
 
-def preprocess_image(image):
-    img = np.array(image.convert('RGB'))
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    img = cv2.medianBlur(img, 3)
-    return img
+reader = load_model()
 
+# Загрузка изображения
+image = st.file_uploader(label="Upload your image here", type=['png', 'jpg', 'jpeg'])
 
-def recognize_text(image):
-    text = pt.image_to_string(image, lang='eng+rus')
-    return text
+if image is not None:
+    input_image = Image.open(image)
 
+    # Отображение изображения
+    st.image(input_image)
 
-def show_results(text):
-    st.write("Распознанный текст:")
-    st.write(text)
+    # Использование OCR для чтения текста
+    with st.spinner("Loading..."):
+        result = reader.readtext(np.array(input_image))
+        result_text = "\n".join([text[1] for text in result])
+        st.text(result_text)
 
+    st.success("Text extraction completed")
+else:
+    st.write("Upload an Image")
 
-def main():
-    st.title("Распознавание текста с картинки")
-    uploaded_image = st.file_uploader("Загрузите изображение", type=['png', 'jpg', 'jpeg'])
-
-    if uploaded_image is not None:
-        image = load_image(uploaded_image)
-        st.image(image, caption='Загруженное изображение', use_column_width=True)
-        processed_image = preprocess_image(image)
-        text = recognize_text(processed_image)
-        show_results(text)
-
-
-if __name__ == '__main__':
-    main()
+# Добавление подписи
+st.caption("Made with Streamlit")
