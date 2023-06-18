@@ -2,5 +2,5 @@ wheel
 numpy==1.24.3
 streamlit
 pytesseract
-Pil==8.3.2
+PIL==8.3.2
 cv2
