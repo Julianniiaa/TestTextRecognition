@@ -1,0 +1,6 @@
+wheel
+numpy==1.24.3
+streamlit
+pytesseract
+PIL
+cv2
